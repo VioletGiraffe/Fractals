@@ -1,7 +1,9 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "mandelbrot/cmandelbrotset.h"
 
-#include "complex/complex.h"
+DISABLE_COMPILER_WARNINGS
+#include "ui_mainwindow.h"
+RESTORE_COMPILER_WARNINGS
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -9,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	Complex{1, 0} * Complex();
+	ui->fractalWidget->setFractal<CMandelbrotSet>();
 }
 
 MainWindow::~MainWindow()

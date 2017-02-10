@@ -8,6 +8,8 @@ struct ComplexGeneric
 {
 	static_assert(std::is_floating_point<ComponentType>::value, "ComponentType must be a floating point type.");
 
+	typedef ComponentType ScalarType;
+
 	explicit ComplexGeneric(ComponentType real = (ComponentType)0, ComponentType imaginative = (ComponentType)0) :
 		re(real),
 		im(imaginative)

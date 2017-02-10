@@ -1,7 +1,10 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
+#include "compiler/compiler_warnings_control.h"
+
+DISABLE_COMPILER_WARNINGS
 #include <QMainWindow>
+RESTORE_COMPILER_WARNINGS
 
 namespace Ui {
 class MainWindow;
@@ -17,5 +20,3 @@ public:
 private:
 	Ui::MainWindow *ui;
 };
-
-#endif // MAINWINDOW_H

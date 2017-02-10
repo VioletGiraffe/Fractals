@@ -1,9 +1,11 @@
 TEMPLATE = subdirs
 
-SUBDIRS += app math cpputils cpp-template-utils
+SUBDIRS += app math cpputils cpp-template-utils fractals
 
 cpputils.depends = cpp-template-utils
 
 math.depends = cpputils
 
-app.depends = math cpputils
+fractals.depends = math
+
+app.depends = math cpputils fractals

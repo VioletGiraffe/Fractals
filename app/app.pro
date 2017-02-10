@@ -46,16 +46,19 @@ linux*|mac*{
 
 
 SOURCES += main.cpp\
-		mainwindow.cpp
+	mainwindow.cpp \
+	cfractalwidget.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+	cfractalwidget.h
 
 FORMS    += mainwindow.ui
 
 INCLUDEPATH += \
 	../math \
 	../cpputils \
+	../fractals \
 	../cpp-template-utils
 
 LIBS += -L$${DESTDIR}
-LIBS += -lcpputils
+LIBS += -lcpputils -lfractals
