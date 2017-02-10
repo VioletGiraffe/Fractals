@@ -23,7 +23,10 @@ public:
 
 protected:
 	void paintEvent(QPaintEvent *event) override;
+	void wheelEvent(QWheelEvent* event) override;
 
 private:
 	std::unique_ptr<CFractal> _fractal;
+
+	float _zoomFactor = 1.0f;
 };
