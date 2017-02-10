@@ -1,10 +1,14 @@
 #pragma once
+#include "compiler/compiler_warnings_control.h"
 
 #include <math.h>
 #include <type_traits>
 
+STORE_COMPILER_WARNINGS
+DISABLE_MSVC_WARNING(4324) // 'ComplexGeneric<float>': structure was padded due to alignment specifier
+
 template <typename ComponentType>
-struct ComplexGeneric
+struct alignas(32) ComplexGeneric
 {
 	static_assert(std::is_floating_point<ComponentType>::value, "ComponentType must be a floating point type.");
 
@@ -102,9 +106,11 @@ struct ComplexGeneric
 		return re != other.re && im != other.im;
 	}
 
-	alignas(16) ComponentType re;
-	alignas(16) ComponentType im;
+	ComponentType re;
+	ComponentType im;
 };
+
+RESTORE_COMPILER_WARNINGS
 
 using ComplexF = ComplexGeneric<float>;
 using ComplexD = ComplexGeneric<double>;

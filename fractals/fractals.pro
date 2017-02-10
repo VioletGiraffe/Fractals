@@ -56,6 +56,7 @@ linux*|mac*{
 
 INCLUDEPATH += \
 	../math \
+	../cpputils \
 	../cpp-template-utils
 
 HEADERS += \
