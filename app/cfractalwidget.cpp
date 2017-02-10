@@ -9,6 +9,8 @@ DISABLE_COMPILER_WARNINGS
 #include <QWheelEvent>
 RESTORE_COMPILER_WARNINGS
 
+#include <omp.h>
+
 CFractalWidget::CFractalWidget(QWidget *parent) : QWidget(parent)
 {
 }
@@ -24,16 +26,20 @@ void CFractalWidget::paintEvent(QPaintEvent *event)
 
 	QImage bitmap(size(), QImage::Format_RGB32);
 
-	for (int y = 0, yMax = height(); y < yMax; ++y)
+	const int w = width(), h = height();
+
+	#pragma omp parallel for schedule(static)
+	for (int y = 0; y < h; ++y)
 	{
 		uint32_t* const scanline = (uint32_t*)bitmap.scanLine(y);
-		for (int x = 0, xMax = width(); x < xMax; ++x)
+
+		for (int x = 0; x < w; ++x)
 		{
 			constexpr size_t maxIterations = 500;
-			const auto result = _fractal->checkPoint(Complex{Complex::ScalarType(x - xMax / 2), Complex::ScalarType(y - yMax / 2)}, _zoomFactor, maxIterations);
+			const auto result = _fractal->checkPoint(Complex{Complex::ScalarType(x - w / 2), Complex::ScalarType(y - h / 2)}, _zoomFactor, maxIterations);
 			if (result > 0.0f)
 			{
-				const uint8_t shade = 0xFF * result;
+				const uint8_t shade = static_cast<uint8_t>(255.0f * result);
 				scanline[x] = 0xFF000000 | (shade << 16) | shade;
 			}
 			else
