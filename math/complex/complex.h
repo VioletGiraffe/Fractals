@@ -22,8 +22,11 @@ struct ComplexGeneric
 
 	ComplexGeneric& operator*= (const ComplexGeneric& other)
 	{
-		re = re * other.re - im * other.im;
+		const auto new_re = re * other.re - im * other.im;
+
 		im = re * other.im + im * other.re;
+		re = new_re;
+
 		return *this;
 	}
 
@@ -47,8 +50,11 @@ struct ComplexGeneric
 	ComplexGeneric& operator/= (const ComplexGeneric& other)
 	{
 		const auto denominator = other.re * other.re + other.im * other.im;
-		re = (re * other.re + im * other.im) / denominator;
+
+		const auto new_re = (re * other.re + im * other.im) / denominator;
+
 		im = (im * other.re - re * other.im) / denominator;
+		re = new_re;
 		return *this;
 	}
 
@@ -78,7 +84,12 @@ struct ComplexGeneric
 
 	ComponentType modulus() const
 	{
-		return sqrt(re * re + im * im);
+		return sqrt(modulusSqr());
+	}
+
+	ComponentType modulusSqr() const
+	{
+		return re * re + im * im;
 	}
 
 	ComponentType re;

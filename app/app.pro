@@ -6,7 +6,7 @@
 
 QT += core gui widgets
 
-TARGET = Fractals
+TARGET = FractalViewer
 TEMPLATE = app
 
 mac* | linux*{

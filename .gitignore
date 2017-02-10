@@ -9,6 +9,7 @@ installer/windows/binaries/
 *.user
 *.sln.docstates
 *.pro.user*
+*.VC.*db
 
 # Build results
 [Dd]ebug/

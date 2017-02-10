@@ -1,5 +1,6 @@
 #include "cfractalwidget.h"
 #include "cfractal.h"
+#include "system/ctimeelapsed.h"
 
 DISABLE_COMPILER_WARNINGS
 #include <QDebug>
@@ -22,11 +23,13 @@ void CFractalWidget::paintEvent(QPaintEvent *event)
 	if (!_fractal)
 		return;
 
+	CTimeElapsed timer(true);
+
 	for (int y = event->rect().top(), yMax = event->rect().bottom(); y < yMax; ++y)
 	{
 		for (int x = event->rect().left(), xMax = event->rect().right(); x < xMax; ++x)
 		{
-			constexpr size_t maxIterations = 1000;
+			constexpr size_t maxIterations = 500;
 			const auto result = _fractal->checkPoint(Complex{Complex::ScalarType(x - xMax / 2), Complex::ScalarType(y - yMax / 2)}, _zoomFactor, maxIterations);
 			if (result > maxIterations)
 			{
@@ -38,6 +41,8 @@ void CFractalWidget::paintEvent(QPaintEvent *event)
 			painter.drawPoint(x, y);
 		}
 	}
+
+	qDebug() << "Painting the fractal took" << timer.elapsed() << "ms";
 }
 
 void CFractalWidget::wheelEvent(QWheelEvent *event)
