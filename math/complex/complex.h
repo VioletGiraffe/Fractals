@@ -92,8 +92,18 @@ struct ComplexGeneric
 		return re * re + im * im;
 	}
 
-	ComponentType re;
-	ComponentType im;
+	bool operator== (const ComplexGeneric& other) const
+	{
+		return re == other.re && im == other.im;
+	}
+
+	bool operator!= (const ComplexGeneric& other) const
+	{
+		return re != other.re && im != other.im;
+	}
+
+	alignas(16) ComponentType re;
+	alignas(16) ComponentType im;
 };
 
 using ComplexF = ComplexGeneric<float>;
