@@ -5,6 +5,6 @@
 class CMandelbrotSet : public CFractal
 {
 public:
-	// Returns the number of iterations in which the point left the bounds
-	size_t checkPoint(const Complex& c, Complex::ScalarType zoomFactor, const size_t iterationsLimit = 1000) const override;
+	// Returns the metric of this point in the [0.0; 1.0] range.
+	Complex::ScalarType checkPoint(const Complex& c, Complex::ScalarType zoomFactor, const size_t iterationsLimit = 1000) const override;
 };

@@ -2,14 +2,14 @@
 
 #include <limits>
 
-#define fp_literal(x) Complex::ScalarType(x)
+#define to_fp(x) Complex::ScalarType(x)
 
-size_t CMandelbrotSet::checkPoint(const Complex &c, Complex::ScalarType zoomFactor, const size_t iterationsLimit) const
+Complex::ScalarType CMandelbrotSet::checkPoint(const Complex &c, Complex::ScalarType zoomFactor, const size_t iterationsLimit) const
 {
-	constexpr auto bound = fp_literal(1e10);
-	constexpr auto baseScale = fp_literal(0.02);
+	constexpr auto bound = to_fp(1e10);
+	constexpr auto baseScale = to_fp(0.02);
 
-	const auto scale = baseScale + zoomFactor * fp_literal(0.1) * baseScale;
+	const auto scale = baseScale * zoomFactor;
 	const auto scaledC = c * scale;
 
 	Complex z {0, 0};
@@ -20,8 +20,8 @@ size_t CMandelbrotSet::checkPoint(const Complex &c, Complex::ScalarType zoomFact
 		z += scaledC;
 
 		if (z.modulusSqr() > bound)
-			return i; // Unbound
+			return to_fp(i + 1) / iterationsLimit; // Unbound
 	}
 
-	return iterationsLimit + 1; // Bound
+	return to_fp(0.0); // Bound
 }
