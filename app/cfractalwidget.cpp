@@ -26,7 +26,7 @@ void CFractalWidget::paintEvent(QPaintEvent *event)
 		for (int x = event->rect().left(), xMax = event->rect().right(); x < xMax; ++x)
 		{
 			constexpr size_t maxIterations = 1000;
-			const auto result = _fractal->checkPoint(Complex{Complex::ScalarType(x), Complex::ScalarType(y)}, maxIterations);
+			const auto result = _fractal->checkPoint(Complex{Complex::ScalarType(x - xMax / 2), Complex::ScalarType(y - yMax / 2)}, maxIterations);
 			if (result > maxIterations)
 			{
 				painter.setPen(Qt::yellow);

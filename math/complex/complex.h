@@ -27,6 +27,18 @@ struct ComplexGeneric
 		return *this;
 	}
 
+	// Scalar multiplication
+	ComplexGeneric operator* (const ComponentType scalar) const
+	{
+		return ComplexGeneric(*this) *= scalar;
+	}
+
+	ComplexGeneric& operator*= (const ComponentType scalar)
+	{
+		*this *= ComplexGeneric{scalar, ComponentType(0)};
+		return *this;
+	}
+
 	ComplexGeneric operator/ (const ComplexGeneric& other) const
 	{
 		return ComplexGeneric(*this) /= other;
