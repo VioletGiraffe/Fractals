@@ -17,29 +17,34 @@ void CFractalWidget::paintEvent(QPaintEvent *event)
 {
 	event->accept();
 
-	QPainter painter(this);
-	painter.fillRect(rect(), Qt::black);
-
 	if (!_fractal)
 		return;
 
 	CTimeElapsed timer(true);
 
-	for (int y = event->rect().top(), yMax = event->rect().bottom(); y < yMax; ++y)
+	QImage bitmap(size(), QImage::Format_RGB32);
+
+	for (int y = 0, yMax = height(); y < yMax; ++y)
 	{
-		for (int x = event->rect().left(), xMax = event->rect().right(); x < xMax; ++x)
+		uint32_t* const scanline = (uint32_t*)bitmap.scanLine(y);
+		for (int x = 0, xMax = width(); x < xMax; ++x)
 		{
 			constexpr size_t maxIterations = 500;
 			const auto result = _fractal->checkPoint(Complex{Complex::ScalarType(x - xMax / 2), Complex::ScalarType(y - yMax / 2)}, _zoomFactor, maxIterations);
 			if (result > 0.0f)
 			{
-				painter.setPen(QColor(255 * result, 0, 255 * result));
-				painter.drawPoint(x, y);
+				const uint8_t shade = 0xFF * result;
+				scanline[x] = 0xFF000000 | (shade << 16) | shade;
 			}
+			else
+				scanline[x] = 0xFF000000;
 		}
 	}
 
-	qDebug() << "Painting the fractal took" << timer.elapsed() << "ms";
+	qDebug() << "Calculating the fractal took" << timer.elapsed() << "ms";
+
+	QPainter painter(this);
+	painter.drawImage(0, 0, bitmap);
 }
 
 void CFractalWidget::wheelEvent(QWheelEvent *event)
