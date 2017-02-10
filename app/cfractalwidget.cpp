@@ -30,12 +30,9 @@ void CFractalWidget::paintEvent(QPaintEvent *event)
 		for (int x = event->rect().left(), xMax = event->rect().right(); x < xMax; ++x)
 		{
 			constexpr size_t maxIterations = 500;
-			auto result = _fractal->checkPoint(Complex{Complex::ScalarType(x - xMax / 2), Complex::ScalarType(y - yMax / 2)}, _zoomFactor, maxIterations);
+			const auto result = _fractal->checkPoint(Complex{Complex::ScalarType(x - xMax / 2), Complex::ScalarType(y - yMax / 2)}, _zoomFactor, maxIterations);
 			if (result > 0.0f)
 			{
-				if (result < 0.1f)
-					result *= 10.0f;
-
 				painter.setPen(QColor(255 * result, 0, 255 * result));
 				painter.drawPoint(x, y);
 			}

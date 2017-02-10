@@ -7,7 +7,7 @@
 Complex::ScalarType CMandelbrotSet::checkPoint(const Complex &c, Complex::ScalarType zoomFactor, const size_t iterationsLimit) const
 {
 	constexpr auto bound = to_fp(1e10);
-	constexpr auto baseScale = to_fp(0.02);
+	constexpr auto baseScale = to_fp(0.015);
 
 	const auto scale = baseScale * zoomFactor;
 	const auto scaledC = c * scale;
@@ -20,7 +20,7 @@ Complex::ScalarType CMandelbrotSet::checkPoint(const Complex &c, Complex::Scalar
 		z += scaledC;
 
 		if (z.modulusSqr() > bound)
-			return to_fp(i + 1) / iterationsLimit; // Unbound
+			return pow(to_fp(i + 1) / iterationsLimit, to_fp(0.45)); // Unbound
 	}
 
 	return to_fp(0.0); // Bound
