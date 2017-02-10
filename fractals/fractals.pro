@@ -55,7 +55,8 @@ linux*|mac*{
 }
 
 INCLUDEPATH += \
-	../math
+	../math \
+	../cpp-template-utils
 
 HEADERS += \
     mandelbrot/cmandelbrotset.h \
