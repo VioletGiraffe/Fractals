@@ -43,3 +43,4 @@ INCLUDEPATH += \
 	../cpp-template-utils
 
 include (complex/complex.pri)
+include (histogram/histogram.pri)

@@ -15,7 +15,7 @@ inline bool pointBelongsToCardioid(const Complex &pt)
 	return q * (q + x_offset) < to_fp(0.25) * im_sqr;
 }
 
-Complex::ScalarType CMandelbrotSet::checkPoint(const Complex &c, Complex::ScalarType zoomFactor, const size_t iterationsLimit) const
+size_t CMandelbrotSet::checkPoint(const Complex &c, Complex::ScalarType zoomFactor, const size_t iterationsLimit) const
 {
 	constexpr auto bound = to_fp(15); // 4.0 (2^2) should be enough since no point with magnitude over 2.0 can be part of the set, but this value affects the coloring of the outside regions
 	constexpr auto baseScale = to_fp(0.005);
@@ -24,7 +24,7 @@ Complex::ScalarType CMandelbrotSet::checkPoint(const Complex &c, Complex::Scalar
 	const auto scaledC = c * scale;
 
 	if (pointBelongsToCardioid(scaledC))
-		return to_fp(0.0); // Belongs to the set
+		return 0; // Belongs to the set
 
 	Complex z {0, 0};
 
@@ -39,11 +39,11 @@ Complex::ScalarType CMandelbrotSet::checkPoint(const Complex &c, Complex::Scalar
 		z += scaledC;
 
 		if (z == prevValues[0]) // Cycle of period 2
-			return to_fp(0.0); // Belongs to the set
+			return 0; // Belongs to the set
 
 		if (z.modulusSqr() > bound)
-			return pow(to_fp(i + 1) / iterationsLimit, to_fp(0.45)); // Unbound - does not belong to the set
+			return i;
 	}
 
-	return to_fp(0.0); // Belongs to the set
+	return 0; // Belongs to the set
 }

@@ -1,6 +1,7 @@
 #include "cfractalwidget.h"
 #include "cfractal.h"
 #include "system/ctimeelapsed.h"
+#include "histogram/chistogram.h"
 
 DISABLE_COMPILER_WARNINGS
 #include <QDebug>
@@ -28,19 +29,38 @@ void CFractalWidget::paintEvent(QPaintEvent *event)
 
 	const int w = width(), h = height();
 
+	constexpr size_t maxNumIterations = 500;
+	CHistogram<size_t, maxNumIterations> histogram;
+
 	#pragma omp parallel for schedule(static)
 	for (int y = 0; y < h; ++y)
 	{
+		const auto resultsLine = _fractalFunctionValues.get() + y * w;
+
+		for (int x = 0; x < w; ++x)
+		{
+			const auto result = _fractal->checkPoint(Complex{Complex::ScalarType(x - w / 2), Complex::ScalarType(y - h / 2)}, _zoomFactor, maxNumIterations);
+			histogram.addSample(result);
+			resultsLine[x] = result;
+		}
+	}
+
+	for (int y = 0; y < h; ++y)
+	{
+		const auto valuesLine = _fractalFunctionValues.get() + y * w;
 		uint32_t* const scanline = (uint32_t*)bitmap.scanLine(y);
 
 		for (int x = 0; x < w; ++x)
 		{
-			constexpr size_t maxIterations = 500;
-			const auto result = _fractal->checkPoint(Complex{Complex::ScalarType(x - w / 2), Complex::ScalarType(y - h / 2)}, _zoomFactor, maxIterations);
-			if (result > 0.0f)
+			const auto value = valuesLine[x];
+			const float totalNumSamples = histogram.numSamplesTotal();
+			if (value > 0)
 			{
-				const uint8_t shade = static_cast<uint8_t>(255.0f * result);
-				scanline[x] = 0xFF000000 | (shade << 16) | shade;
+				float hue = 0.0f;
+				for (size_t i = 0; i < value; ++i)
+					hue += histogram.numSamplesForValue(i) / totalNumSamples;
+
+				scanline[x] = QColor::fromHsv((int)hue * 360, 255, 255).rgba();
 			}
 			else
 				scanline[x] = 0xFF000000;
@@ -67,4 +87,11 @@ void CFractalWidget::wheelEvent(QWheelEvent *event)
 
 		update();
 	}
+}
+
+void CFractalWidget::resizeEvent(QResizeEvent *event)
+{
+	QWidget::resizeEvent(event);
+
+	_fractalFunctionValues = std::make_unique<size_t[]>(event->size().width() * event->size().height());
 }

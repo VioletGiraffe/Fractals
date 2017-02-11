@@ -42,7 +42,9 @@ struct alignas(32) ComplexGeneric
 
 	ComplexGeneric& operator*= (const ComponentType scalar)
 	{
-		*this *= ComplexGeneric{scalar, ComponentType(0)};
+		im *= scalar;
+		re *= scalar;
+
 		return *this;
 	}
 
