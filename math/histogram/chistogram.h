@@ -1,15 +1,16 @@
 #pragma once
 
 #include <assert.h>
-#include "math/math.hpp"
+#include <atomic>
 
-template <typename T, size_t MaxValue>
+template <typename T, size_t UpperBound>
 class CHistogram
 {
 public:
+	// Allowed range: [0; UpperBound)
 	void addSample(const T sample)
 	{
-		assert(Math::isInRange(sample, T(0), T(MaxValue - 1)));
+		assert(sample >= T(0) && sample < T(UpperBound));
 
 		++_bands[sample];
 		++_numSamplesCollected;
@@ -20,17 +21,17 @@ public:
 		return _numSamplesCollected;
 	}
 
-	size_t numSamplesForBand(const size_t bandIndex) const
-	{
-		return _bands[bandIndex];
-	}
-
 	size_t numSamplesForValue(const T value) const
 	{
 		return _bands[value];
 	}
 
+	constexpr size_t numBands() const
+	{
+		return UpperBound;
+	}
+
 private:
-	size_t _bands[MaxValue] = {0};
-	size_t _numSamplesCollected = 0;
+	std::atomic<size_t> _bands[UpperBound] = {0};
+	std::atomic<size_t> _numSamplesCollected = 0;
 };

@@ -30,7 +30,7 @@ void CFractalWidget::paintEvent(QPaintEvent *event)
 	const int w = width(), h = height();
 
 	constexpr size_t maxNumIterations = 500;
-	CHistogram<size_t, maxNumIterations> histogram;
+	CHistogram<size_t, maxNumIterations-1> histogram; // -1 because we're not putting zeros in the histogram
 
 	#pragma omp parallel for schedule(static)
 	for (int y = 0; y < h; ++y)
@@ -40,7 +40,8 @@ void CFractalWidget::paintEvent(QPaintEvent *event)
 		for (int x = 0; x < w; ++x)
 		{
 			const auto result = _fractal->checkPoint(Complex{Complex::ScalarType(x - w / 2), Complex::ScalarType(y - h / 2)}, _zoomFactor, maxNumIterations);
-			histogram.addSample(result);
+			if (result > 0)
+				histogram.addSample(result - 1); // -1 because we're not putting zeros in the histogram
 			resultsLine[x] = result;
 		}
 	}
@@ -57,10 +58,10 @@ void CFractalWidget::paintEvent(QPaintEvent *event)
 			if (value > 0)
 			{
 				float hue = 0.0f;
-				for (size_t i = 0; i < value; ++i)
-					hue += histogram.numSamplesForValue(i) / totalNumSamples;
+				for (size_t i = 0; i < value - 1; ++i)
+					hue += histogram.numSamplesForValue(i) / totalNumSamples; // -1 because we're not putting zeros in the histogram
 
-				scanline[x] = QColor::fromHsv((int)hue * 360, 255, 255).rgba();
+				scanline[x] = QColor::fromHsv(hue * 360.0f, 255, 255).rgba();
 			}
 			else
 				scanline[x] = 0xFF000000;
