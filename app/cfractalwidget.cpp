@@ -14,6 +14,9 @@ RESTORE_COMPILER_WARNINGS
 
 CFractalWidget::CFractalWidget(QWidget *parent) : QWidget(parent)
 {
+	_palette.reserve(360);
+	for (int i = 0; i < 360; ++i)
+		_palette.emplace_back(QColor::fromHsv(i, 255, 255).rgb());
 }
 
 void CFractalWidget::paintEvent(QPaintEvent *event)
@@ -54,14 +57,14 @@ void CFractalWidget::paintEvent(QPaintEvent *event)
 		for (int x = 0; x < w; ++x)
 		{
 			const auto value = valuesLine[x];
-			const float totalNumSamples = histogram.numSamplesTotal();
+			const size_t totalNumSamples = histogram.numSamplesTotal();
 			if (value > 0)
 			{
-				float hue = 0.0f;
-				for (size_t i = 0; i < value - 1; ++i)
-					hue += histogram.numSamplesForValue(i) / totalNumSamples; // -1 because we're not putting zeros in the histogram
+				size_t numberOfPointsWithValueUpToCurrent = 0;
+				for (size_t i = 0, max = value - 1; i < max; ++i) // -1 because we're not putting zeros in the histogram
+					numberOfPointsWithValueUpToCurrent += histogram.numSamplesForValue(i);
 
-				scanline[x] = QColor::fromHsv(hue * 360.0f, 255, 255).rgba();
+				scanline[x] = _palette[numberOfPointsWithValueUpToCurrent / (float)totalNumSamples * 360.0f];
 			}
 			else
 				scanline[x] = 0xFF000000;

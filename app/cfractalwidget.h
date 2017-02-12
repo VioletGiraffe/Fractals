@@ -33,4 +33,6 @@ private:
 	std::unique_ptr<size_t[]> _fractalFunctionValues;
 
 	float _zoomFactor = 1.0f;
+
+	std::vector<uint32_t> _palette;
 };
