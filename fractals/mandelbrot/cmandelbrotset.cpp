@@ -18,7 +18,7 @@ inline bool pointBelongsToCardioid(const Complex &pt)
 size_t CMandelbrotSet::checkPoint(const Complex &c, Complex::ScalarType zoomFactor, const size_t iterationsLimit) const
 {
 	constexpr auto bound = to_fp(15); // 4.0 (2^2) should be enough since no point with magnitude over 2.0 can be part of the set, but this value affects the coloring of the outside regions
-	constexpr auto baseScale = to_fp(0.005);
+	constexpr auto baseScale = to_fp(0.00145);
 
 	const auto scale = baseScale * zoomFactor;
 	const auto scaledC = c * scale;
