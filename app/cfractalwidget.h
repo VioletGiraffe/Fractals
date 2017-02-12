@@ -1,7 +1,6 @@
 #pragma once
 
 #include "compiler/compiler_warnings_control.h"
-#include "complex/complex.h"
 
 DISABLE_COMPILER_WARNINGS
 #include <QWidget>
@@ -31,8 +30,6 @@ protected:
 private:
 	std::unique_ptr<CFractal> _fractal;
 	std::unique_ptr<size_t[]> _fractalFunctionValues;
-
-	float _zoomFactor = 1.0f;
 
 	std::vector<uint32_t> _palette;
 };

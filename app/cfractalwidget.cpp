@@ -42,7 +42,7 @@ void CFractalWidget::paintEvent(QPaintEvent *event)
 
 		for (int x = 0; x < w; ++x)
 		{
-			const auto result = _fractal->checkPoint(Complex{Complex::ScalarType(x - w / 2), Complex::ScalarType(y - h / 2)}, _zoomFactor, maxNumIterations);
+			const auto result = _fractal->checkPoint(Complex{Complex::ScalarType(x - w / 2), Complex::ScalarType(y - h / 2)}, maxNumIterations);
 			if (result > 0)
 				histogram.addSample(result - 1); // -1 because we're not putting zeros in the histogram
 			resultsLine[x] = result;
@@ -64,7 +64,7 @@ void CFractalWidget::paintEvent(QPaintEvent *event)
 				for (size_t i = 0, max = value - 1; i < max; ++i) // -1 because we're not putting zeros in the histogram
 					numberOfPointsWithValueUpToCurrent += histogram.numSamplesForValue(i);
 
-				scanline[x] = _palette[numberOfPointsWithValueUpToCurrent / (float)totalNumSamples * 360.0f];
+				scanline[x] = _palette[static_cast<size_t>(numberOfPointsWithValueUpToCurrent / (float)totalNumSamples * 360.0f)];
 			}
 			else
 				scanline[x] = 0xFF000000;
@@ -80,14 +80,19 @@ void CFractalWidget::paintEvent(QPaintEvent *event)
 void CFractalWidget::wheelEvent(QWheelEvent *event)
 {
 	event->accept();
+	if (!_fractal)
+		return;
 
+	auto zoomFactor = _fractal->zoom();
 	if (event->angleDelta().y() != 0)
 	{
 		const float delta = event->angleDelta().y() / 8.0f / 15.0f;
-		if (_zoomFactor >= 1.0f && delta < 0.0f)
-			_zoomFactor *= pow(1.1f, -delta);
+		if (delta < 0.0f)
+			zoomFactor *= pow(1.1f, -delta);
 		else
-			_zoomFactor /= pow(1.1f, delta);
+			zoomFactor /= pow(1.1f, delta);
+
+		_fractal->setZoom(zoomFactor);
 
 		update();
 	}

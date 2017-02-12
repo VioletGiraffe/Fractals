@@ -5,6 +5,12 @@
 
 #define to_fp(x) Complex::ScalarType(x)
 
+CMandelbrotSet::CMandelbrotSet()
+{
+	_zoom = to_fp(0.00145);
+	_offset = Complex(to_fp(0.0), to_fp(0.0));
+}
+
 // https://en.wikipedia.org/wiki/Mandelbrot_set#Optimizations
 inline bool pointBelongsToCardioid(const Complex &pt)
 {
@@ -15,32 +21,29 @@ inline bool pointBelongsToCardioid(const Complex &pt)
 	return q * (q + x_offset) < to_fp(0.25) * im_sqr;
 }
 
-size_t CMandelbrotSet::checkPoint(const Complex &c, Complex::ScalarType zoomFactor, const size_t iterationsLimit) const
+size_t CMandelbrotSet::checkPoint(const Complex& point, const size_t iterationsLimit) const
 {
-	constexpr auto bound = to_fp(15); // 4.0 (2^2) should be enough since no point with magnitude over 2.0 can be part of the set, but this value affects the coloring of the outside regions
-	constexpr auto baseScale = to_fp(0.00145);
+	const auto scaledPoint = point * _zoom + _offset;
 
-	const auto scale = baseScale * zoomFactor;
-	const auto scaledC = c * scale;
-
-	if (pointBelongsToCardioid(scaledC))
+	if (pointBelongsToCardioid(scaledPoint))
 		return 0; // Belongs to the set
 
 	Complex z {0, 0};
 
-	Complex prevValues[2];
+	Complex prevValues[3];
 	for (size_t i = 0; i < iterationsLimit; ++i)
 	{
 		// z = z^2 + c
-		prevValues[0] = prevValues[1];
-		prevValues[1] = z;
-
 		z *= z;
-		z += scaledC;
+		z += scaledPoint;
 
 		if (z == prevValues[0]) // Cycle of period 2
 			return 0; // Belongs to the set
 
+		prevValues[0] = prevValues[1];
+		prevValues[1] = z;
+
+		constexpr auto bound = to_fp(15); // 4.0 (2^2) should be enough since no point with magnitude over 2.0 can be part of the set, but this value affects the coloring of the outside regions
 		if (z.modulusSqr() > bound)
 			return i;
 	}
