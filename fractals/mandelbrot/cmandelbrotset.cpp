@@ -7,8 +7,11 @@
 
 CMandelbrotSet::CMandelbrotSet()
 {
-	_zoom = to_fp(0.00145);
-	_offset = Complex(to_fp(0.0), to_fp(0.0));
+// 	_zoom = to_fp(0.00145);
+// 	_offset = Complex(to_fp(0.0), to_fp(0.0));
+
+	_zoom = to_fp(1.06825e-08);
+	_offset = Complex(to_fp(0.4376), to_fp(0.210502));
 }
 
 // https://en.wikipedia.org/wiki/Mandelbrot_set#Optimizations

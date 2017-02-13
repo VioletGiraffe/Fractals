@@ -118,4 +118,4 @@ using ComplexF = ComplexGeneric<float>;
 using ComplexD = ComplexGeneric<double>;
 using ComplexL = ComplexGeneric<long double>;
 
-using Complex = ComplexF;
+using Complex = ComplexD;

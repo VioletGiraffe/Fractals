@@ -12,6 +12,12 @@ RESTORE_COMPILER_WARNINGS
 
 #include <omp.h>
 
+inline QDebug& operator<<(QDebug& stream, const Complex& c)
+{
+	stream << QPointF(c.re, c.im);
+	return stream;
+}
+
 CFractalWidget::CFractalWidget(QWidget *parent) : QWidget(parent)
 {
 	_palette.reserve(360);
@@ -97,6 +103,9 @@ void CFractalWidget::wheelEvent(QWheelEvent *event)
 
 		_fractal->setZoom(zoomFactor);
 
+		qDebug() << "Zoom:" << zoomFactor;
+		qDebug() << "Offset:" << _fractal->offset();
+
 		update();
 	}
 }
@@ -129,7 +138,10 @@ void CFractalWidget::processMouseDrag()
 	if (_accumulatedMouseOffset.manhattanLength() == 0)
 		return;
 
-	_fractal->setOffset(_fractal->offset() + Complex(-(Complex::ScalarType)_accumulatedMouseOffset.x(), -(Complex::ScalarType)_accumulatedMouseOffset.y()) * _fractal->zoom());
+	const auto newOffset = _fractal->offset() + Complex(-(Complex::ScalarType)_accumulatedMouseOffset.x(), -(Complex::ScalarType)_accumulatedMouseOffset.y()) * _fractal->zoom();
+	qDebug() << "Zoom:" << _fractal->zoom();
+	qDebug() << "Offset:" << newOffset;
+	_fractal->setOffset(newOffset);
 	update();
 
 	_accumulatedMouseOffset = QPoint(0, 0);
