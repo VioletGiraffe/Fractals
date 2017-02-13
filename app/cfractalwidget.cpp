@@ -17,6 +17,9 @@ CFractalWidget::CFractalWidget(QWidget *parent) : QWidget(parent)
 	_palette.reserve(360);
 	for (int i = 0; i < 360; ++i)
 		_palette.emplace_back(QColor::fromHsv(i, 255, 255).rgb());
+
+	_mouseDragTimer.start(200);
+	connect(&_mouseDragTimer, &QTimer::timeout, this, &CFractalWidget::processMouseDrag);
 }
 
 void CFractalWidget::paintEvent(QPaintEvent *event)
@@ -83,9 +86,9 @@ void CFractalWidget::wheelEvent(QWheelEvent *event)
 	if (!_fractal)
 		return;
 
-	auto zoomFactor = _fractal->zoom();
 	if (event->angleDelta().y() != 0)
 	{
+		auto zoomFactor = _fractal->zoom();
 		const float delta = event->angleDelta().y() / 8.0f / 15.0f;
 		if (delta < 0.0f)
 			zoomFactor *= pow(1.1f, -delta);
@@ -98,9 +101,28 @@ void CFractalWidget::wheelEvent(QWheelEvent *event)
 	}
 }
 
+void CFractalWidget::mouseMoveEvent(QMouseEvent *event)
+{
+	if (event->buttons() & Qt::LeftButton)
+		_accumulatedMouseOffset += event->pos() - _prevMousePos;
+
+	_prevMousePos = event->pos();
+}
+
 void CFractalWidget::resizeEvent(QResizeEvent *event)
 {
 	QWidget::resizeEvent(event);
 
 	_fractalFunctionValues = std::make_unique<size_t[]>(event->size().width() * event->size().height());
+}
+
+void CFractalWidget::processMouseDrag()
+{
+	if (_accumulatedMouseOffset.manhattanLength() == 0)
+		return;
+
+	_fractal->setOffset(_fractal->offset() + Complex(-_accumulatedMouseOffset.x(), -_accumulatedMouseOffset.y()) * _fractal->zoom());
+	update();
+
+	_accumulatedMouseOffset = QPoint(0, 0);
 }
