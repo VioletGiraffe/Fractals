@@ -103,10 +103,18 @@ void CFractalWidget::wheelEvent(QWheelEvent *event)
 
 void CFractalWidget::mouseMoveEvent(QMouseEvent *event)
 {
+	qDebug() << "pos:" << event->pos() << "\noffset:" << event->pos() - _prevMousePos << "\naccumulated:" << _accumulatedMouseOffset;
 	if (event->buttons() & Qt::LeftButton)
 		_accumulatedMouseOffset += event->pos() - _prevMousePos;
 
 	_prevMousePos = event->pos();
+}
+
+// Mouse move events are only displatched to the widget if a mouse button is pressed, so it's necessary to update the prev. cursor position upon butoon press to aboid the image jumping around
+void CFractalWidget::mousePressEvent(QMouseEvent *event)
+{
+	if (event->button() == Qt::LeftButton)
+		_prevMousePos = event->pos();
 }
 
 void CFractalWidget::resizeEvent(QResizeEvent *event)
@@ -121,7 +129,7 @@ void CFractalWidget::processMouseDrag()
 	if (_accumulatedMouseOffset.manhattanLength() == 0)
 		return;
 
-	_fractal->setOffset(_fractal->offset() + Complex(-_accumulatedMouseOffset.x(), -_accumulatedMouseOffset.y()) * _fractal->zoom());
+	_fractal->setOffset(_fractal->offset() + Complex(-(Complex::ScalarType)_accumulatedMouseOffset.x(), -(Complex::ScalarType)_accumulatedMouseOffset.y()) * _fractal->zoom());
 	update();
 
 	_accumulatedMouseOffset = QPoint(0, 0);
