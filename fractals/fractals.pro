@@ -60,8 +60,10 @@ INCLUDEPATH += \
 	../cpp-template-utils
 
 HEADERS += \
-    mandelbrot/cmandelbrotset.h \
-    cfractal.h
+	mandelbrot/cmandelbrotset.h \
+	cfractal.h \
+	mandelbrot/cburningshipset.h
 
 SOURCES += \
-    mandelbrot/cmandelbrotset.cpp
+	mandelbrot/cmandelbrotset.cpp \
+	mandelbrot/cburningshipset.cpp

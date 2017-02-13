@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "mandelbrot/cmandelbrotset.h"
+#include "mandelbrot/cburningshipset.h"
 
 DISABLE_COMPILER_WARNINGS
 #include "ui_mainwindow.h"
@@ -11,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	ui->fractalWidget->setFractal<CMandelbrotSet>();
+	ui->fractalWidget->setFractal<CBurningShipSet>();
 }
 
 MainWindow::~MainWindow()

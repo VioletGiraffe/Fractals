@@ -36,9 +36,7 @@ size_t CMandelbrotSet::checkPoint(const Complex& point, const size_t iterationsL
 	Complex prevValues[3];
 	for (size_t i = 0; i < iterationsLimit; ++i)
 	{
-		// z = z^2 + c
-		z *= z;
-		z += scaledPoint;
+		iterate(z, scaledPoint);
 
 		if (z == prevValues[0]) // Cycle of period 2
 			return 0; // Belongs to the set
@@ -52,4 +50,12 @@ size_t CMandelbrotSet::checkPoint(const Complex& point, const size_t iterationsL
 	}
 
 	return 0; // Belongs to the set
+}
+
+void CMandelbrotSet::iterate(Complex& z, const Complex& c) const
+{
+	// z = z^2 + c
+
+	z *= z;
+	z += c;
 }
