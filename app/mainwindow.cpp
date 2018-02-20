@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	ui->fractalWidget->setFractal<CBurningShipSet>();
+	ui->fractalWidget->setFractal<CMandelbrotSet>();
 }
 
 MainWindow::~MainWindow()

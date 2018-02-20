@@ -14,6 +14,12 @@ mac* | linux*{
 	CONFIG(debug, debug|release):CONFIG += Debug
 }
 
+contains(QT_ARCH, x86_64) {
+	ARCHITECTURE = x64
+} else {
+	ARCHITECTURE = x86
+}
+
 Release:OUTPUT_DIR=release
 Debug:OUTPUT_DIR=debug
 
@@ -61,4 +67,8 @@ INCLUDEPATH += \
 	../cpp-template-utils
 
 LIBS += -L$${DESTDIR}
-LIBS += -lcpputils -lfractals
+LIBS += -lcpputils -lfractals -locl
+
+win* {
+	LIBS += -L../ocl/SDK/lib/$${ARCHITECTURE} -lOpenCL
+}

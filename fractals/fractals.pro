@@ -59,6 +59,11 @@ INCLUDEPATH += \
 	../cpputils \
 	../cpp-template-utils
 
+win*{
+	INCLUDEPATH += \
+		"C:\Program Files (x86)\AMD APP SDK\3.0\include"
+}
+
 HEADERS += \
 	mandelbrot/cmandelbrotset.h \
 	cfractal.h \

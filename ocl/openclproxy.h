@@ -1,11 +1,7 @@
-#ifndef OPENCLPROXY_H
-#define OPENCLPROXY_H
-
+#pragma once
 
 class OpenClProxy
 {
 public:
 	OpenClProxy();
 };
-
-#endif // OPENCLPROXY_H

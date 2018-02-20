@@ -1,6 +1,10 @@
 #include "cmandelbrotset.h"
 #include "math/math.hpp"
 
+DISABLE_COMPILER_WARNINGS
+#include <CL/CL.hpp>
+RESTORE_COMPILER_WARNINGS
+
 #include <limits>
 
 #define to_fp(x) Complex::ScalarType(x)
