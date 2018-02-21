@@ -7,6 +7,12 @@ mac* | linux*{
 	CONFIG(debug, debug|release):CONFIG += Debug
 }
 
+contains(QT_ARCH, x86_64) {
+	ARCHITECTURE = x64
+} else {
+	ARCHITECTURE = x86
+}
+
 android {
 	Release:OUTPUT_DIR=android/release
 	Debug:OUTPUT_DIR=android/debug
@@ -16,26 +22,20 @@ android {
 	Debug:OUTPUT_DIR=ios/debug
 
 } else {
-	Release:OUTPUT_DIR=release
-	Debug:OUTPUT_DIR=debug
-
+	Release:OUTPUT_DIR=release/$${ARCHITECTURE}
+	Debug:OUTPUT_DIR=debug/$${ARCHITECTURE}
 }
 
 DESTDIR  = ../bin/$${OUTPUT_DIR}/
 OBJECTS_DIR = ../build/$${OUTPUT_DIR}/$${TARGET}
 MOC_DIR     = ../build/$${OUTPUT_DIR}/$${TARGET}
 UI_DIR      = ../build/$${OUTPUT_DIR}/$${TARGET}
-RCC_DIR     = ../build/$${OUTPUT_DIR}/$${TARGET}
 
 CONFIG -= qt
 CONFIG += c++14
 
-win32*:!*msvc2012:*msvc* {
-	QMAKE_CXXFLAGS += /FS
-}
-
 win*{
-	QMAKE_CXXFLAGS += /MP
+	QMAKE_CXXFLAGS += /MP /FS
 	DEFINES += WIN32_LEAN_AND_MEAN NOMINMAX
 	QMAKE_CXXFLAGS_WARN_ON = /W4
 
@@ -58,11 +58,6 @@ INCLUDEPATH += \
 	../math \
 	../cpputils \
 	../cpp-template-utils
-
-win*{
-	INCLUDEPATH += \
-		"C:\Program Files (x86)\AMD APP SDK\3.0\include"
-}
 
 HEADERS += \
 	mandelbrot/cmandelbrotset.h \

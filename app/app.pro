@@ -20,25 +20,25 @@ contains(QT_ARCH, x86_64) {
 	ARCHITECTURE = x86
 }
 
-Release:OUTPUT_DIR=release
-Debug:OUTPUT_DIR=debug
+Release:OUTPUT_DIR=release/$${ARCHITECTURE}
+Debug:OUTPUT_DIR=debug/$${ARCHITECTURE}
 
 DESTDIR  = ../bin/$${OUTPUT_DIR}/
-OBJECTS_DIR = ../build/$${OUTPUT_DIR}/$${TARGET}/
-MOC_DIR     = ../build/$${OUTPUT_DIR}/$${TARGET}/
-UI_DIR      = ../build/$${OUTPUT_DIR}/$${TARGET}/
-RCC_DIR     = ../build/$${OUTPUT_DIR}/$${TARGET}/
+OBJECTS_DIR = ../build/$${OUTPUT_DIR}/$${TARGET}
+MOC_DIR     = ../build/$${OUTPUT_DIR}/$${TARGET}
+UI_DIR      = ../build/$${OUTPUT_DIR}/$${TARGET}
 
 CONFIG += c++14
 
-win32*:!*msvc2012:*msvc* {
-	QMAKE_CXXFLAGS += /FS
-}
-
 win*{
-	QMAKE_CXXFLAGS += /MP /openmp
+	QMAKE_CXXFLAGS += /MP /FS
 	DEFINES += WIN32_LEAN_AND_MEAN NOMINMAX
 	QMAKE_CXXFLAGS_WARN_ON = /W4
+
+	QMAKE_LFLAGS += /DEBUG:FASTLINK
+
+	Debug:QMAKE_LFLAGS += /INCREMENTAL
+	Release:QMAKE_LFLAGS += /OPT:REF /OPT:ICF
 }
 
 linux*|mac*{
@@ -49,7 +49,6 @@ linux*|mac*{
 	Release:DEFINES += NDEBUG=1
 	Debug:DEFINES += _DEBUG
 }
-
 
 SOURCES += main.cpp\
 	mainwindow.cpp \
