@@ -1,1 +1,1 @@
-![Image of the Mandelbrot fractal](blob:https://imgur.com/2b638109-52e1-42a4-94fa-5bbcd1eaf6ad)
+![Image of the Mandelbrot fractal](https://i.imgur.com/LzJvgUi.png)
